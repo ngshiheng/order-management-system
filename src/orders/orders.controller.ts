@@ -8,8 +8,10 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrdersFilterDto } from './dto/get-orders-filter.dto';
 import { OrderStatus } from './order-status.enum';
@@ -18,6 +20,7 @@ import { OrdersService } from './orders.service';
 import { OrderStatusValidationPipe } from './pipes/order-status-validation.pipe';
 
 @Controller('orders')
+@UseGuards(AuthGuard())
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
