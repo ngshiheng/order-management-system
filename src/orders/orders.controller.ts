@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -33,5 +34,10 @@ export class OrdersController {
     @Body('status', OrderStatusValidationPipe) status: OrderStatus,
   ): Promise<Order> {
     return this.ordersService.updateOrderStatus(id, status);
+  }
+
+  @Delete('/:id')
+  deleteOrder(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.ordersService.deleteOrder(id);
   }
 }
