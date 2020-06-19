@@ -7,8 +7,11 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { GetOrdersFilterDto } from './dto/get-orders-filter.dto';
 import { OrderStatus } from './order-status.enum';
 import { Order } from './orders.entity';
 import { OrdersService } from './orders.service';
@@ -17,6 +20,13 @@ import { OrderStatusValidationPipe } from './pipes/order-status-validation.pipe'
 @Controller('orders')
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
+
+  @Get()
+  getOrders(
+    @Query(ValidationPipe) filterDto: GetOrdersFilterDto,
+  ): Promise<Order[]> {
+    return this.ordersService.getOrders(filterDto);
+  }
 
   @Get('/:id')
   getOrderById(@Param('id', ParseIntPipe) id: number): Promise<Order> {
