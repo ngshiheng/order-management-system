@@ -6,7 +6,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   port: 5432,
   username: process.env.PGUSER,
   password: process.env.PGPASSWORD,
-  database: 'task-manager',
+  database: 'order-management-system',
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: true,
 };
