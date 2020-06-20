@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
@@ -24,6 +25,7 @@ import { OrderStatusValidationPipe } from './pipes/order-status-validation.pipe'
 @Controller('orders')
 @UseGuards(AuthGuard())
 export class OrdersController {
+  private logger = new Logger('OrdersController');
   constructor(private ordersService: OrdersService) {}
 
   @Get()
@@ -31,6 +33,13 @@ export class OrdersController {
     @Query(ValidationPipe) filterDto: GetOrdersFilterDto,
     @GetUser() user: User,
   ): Promise<Order[]> {
+    this.logger.verbose(
+      `User "${
+        user.username
+      }" retrieving all orders. Filters applied: "${JSON.stringify(
+        filterDto,
+      )}"`,
+    );
     return this.ordersService.getOrders(filterDto, user);
   }
 
@@ -47,6 +56,11 @@ export class OrdersController {
     @Body() createOrderDto: CreateOrderDto,
     @GetUser() user: User,
   ): Promise<Order> {
+    this.logger.verbose(
+      `User "${user.username}" creating a new task. Data: ${JSON.stringify(
+        createOrderDto,
+      )}`,
+    );
     return this.ordersService.createOrder(createOrderDto, user);
   }
 

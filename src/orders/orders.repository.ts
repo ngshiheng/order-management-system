@@ -1,3 +1,4 @@
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { User } from 'src/auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -7,6 +8,7 @@ import { Order } from './orders.entity';
 
 @EntityRepository(Order)
 export class OrderRepository extends Repository<Order> {
+  private logger = new Logger('OrderRepository');
   async createOrder(
     createOrderDto: CreateOrderDto,
     user: User,
@@ -17,7 +19,18 @@ export class OrderRepository extends Repository<Order> {
     order.quantity = quantity;
     order.status = OrderStatus.CREATED;
     order.user = user;
-    await order.save();
+
+    try {
+      await order.save();
+    } catch (error) {
+      this.logger.error(
+        `Failed to create order for user "${
+          user.username
+        }", DTO: ${JSON.stringify(createOrderDto)}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException();
+    }
     delete order.user;
     return order;
   }
@@ -31,6 +44,17 @@ export class OrderRepository extends Repository<Order> {
     if (status) {
       query.andWhere('order.status = :status', { status });
     }
-    return await query.getMany();
+
+    try {
+      return await query.getMany();
+    } catch (error) {
+      this.logger.error(
+        `Failed to get task for user "${user.username}", DTO: ${JSON.stringify(
+          filterDto,
+        )}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException();
+    }
   }
 }
