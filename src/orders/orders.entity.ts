@@ -1,4 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/auth/user.entity';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { OrderStatus } from './order-status.enum';
 
 @Entity()
@@ -14,4 +21,14 @@ export class Order extends BaseEntity {
 
   @Column()
   status: OrderStatus;
+
+  @ManyToOne(
+    type => User,
+    user => user.orders,
+    { eager: false },
+  )
+  user: User;
+
+  @Column()
+  userId: number;
 }
