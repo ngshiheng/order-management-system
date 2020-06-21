@@ -57,7 +57,7 @@ export class OrdersController {
     @GetUser() user: User,
   ): Promise<Order> {
     this.logger.verbose(
-      `User "${user.username}" creating a new task. Data: ${JSON.stringify(
+      `User "${user.username}" creating a new order. Data: ${JSON.stringify(
         createOrderDto,
       )}`,
     );

@@ -1,4 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ClientProxy,
+  ClientProxyFactory,
+  Transport,
+} from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/user.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -7,14 +12,26 @@ import { OrderStatus } from './order-status.enum';
 import { Order } from './orders.entity';
 import { OrderRepository } from './orders.repository';
 
+const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
+const REDIS_PORT = process.env.REDIS_PORT || 6379;
+
 @Injectable()
 export class OrdersService {
+  client: ClientProxy;
+
   constructor(
     @InjectRepository(OrderRepository)
     private orderRepository: OrderRepository,
-  ) {}
+  ) {
+    this.client = ClientProxyFactory.create({
+      transport: Transport.REDIS,
+      options: {
+        url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
+      },
+    });
+  }
 
-  getOrders(filterDto: GetOrdersFilterDto, user: User): Promise<Order[]> {
+  async getOrders(filterDto: GetOrdersFilterDto, user: User): Promise<Order[]> {
     return this.orderRepository.getOrders(filterDto, user);
   }
 
@@ -32,7 +49,14 @@ export class OrdersService {
     createOrderDto: CreateOrderDto,
     user: User,
   ): Promise<Order> {
-    return this.orderRepository.createOrder(createOrderDto, user);
+    const order = await this.orderRepository.createOrder(createOrderDto, user);
+    await this.client
+      .send(
+        { type: 'create-order-payment' },
+        { orderId: order.id, userId: order.userId },
+      )
+      .toPromise();
+    return order;
   }
 
   async updateOrderStatus(

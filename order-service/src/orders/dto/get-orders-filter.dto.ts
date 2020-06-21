@@ -8,6 +8,7 @@ export class GetOrdersFilterDto {
     OrderStatus.CONFIRMED,
     OrderStatus.DELIVERED,
     OrderStatus.CANCELLED,
+    OrderStatus.DECLINED,
   ])
   status: OrderStatus;
 }

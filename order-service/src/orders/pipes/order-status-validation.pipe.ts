@@ -7,6 +7,7 @@ export class OrderStatusValidationPipe implements PipeTransform {
     OrderStatus.CONFIRMED,
     OrderStatus.CANCELLED,
     OrderStatus.DELIVERED,
+    OrderStatus.DECLINED,
   ];
 
   transform(value: string): string {
