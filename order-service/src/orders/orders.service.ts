@@ -59,12 +59,11 @@ export class OrdersService {
     return order;
   }
 
-  async updateOrderStatus(
-    id: number,
-    status: OrderStatus,
-    user: User,
-  ): Promise<Order> {
-    const order = await this.getOrderById(id, user);
+  async updateOrderStatus(id: number, status: OrderStatus): Promise<Order> {
+    const order = await this.orderRepository.findOne(id);
+    if (!order) {
+      throw new NotFoundException(`Order ID "${id}" not found!`);
+    }
     order.status = status;
     order.save();
     return order;
