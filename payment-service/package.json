@@ -1,5 +1,5 @@
 {
-  "name": "order-management-system",
+  "name": "payment-service",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -23,20 +23,15 @@
   "dependencies": {
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
-    "@nestjs/jwt": "^7.0.0",
+    "@nestjs/microservices": "^7.2.0",
     "@nestjs/passport": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
-    "@nestjs/typeorm": "^7.1.0",
-    "bcrypt": "^5.0.0",
-    "class-transformer": "^0.2.3",
-    "class-validator": "^0.12.2",
-    "passport": "^0.4.1",
-    "passport-jwt": "^4.0.0",
-    "pg": "^8.2.1",
+    "axios": "^0.19.2",
+    "lodash": "^4.17.15",
+    "redis": "^3.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.5.4",
-    "typeorm": "^0.2.25"
+    "rxjs": "^6.5.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",

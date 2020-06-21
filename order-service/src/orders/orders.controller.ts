@@ -23,12 +23,12 @@ import { OrdersService } from './orders.service';
 import { OrderStatusValidationPipe } from './pipes/order-status-validation.pipe';
 
 @Controller('orders')
-@UseGuards(AuthGuard())
 export class OrdersController {
   private logger = new Logger('OrdersController');
   constructor(private ordersService: OrdersService) {}
 
   @Get()
+  @UseGuards(AuthGuard())
   getOrders(
     @Query(ValidationPipe) filterDto: GetOrdersFilterDto,
     @GetUser() user: User,
@@ -44,6 +44,7 @@ export class OrdersController {
   }
 
   @Get('/:id')
+  @UseGuards(AuthGuard())
   getOrderById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -52,12 +53,13 @@ export class OrdersController {
   }
 
   @Post()
+  @UseGuards(AuthGuard())
   createOrder(
     @Body() createOrderDto: CreateOrderDto,
     @GetUser() user: User,
   ): Promise<Order> {
     this.logger.verbose(
-      `User "${user.username}" creating a new task. Data: ${JSON.stringify(
+      `User "${user.username}" creating a new order. Data: ${JSON.stringify(
         createOrderDto,
       )}`,
     );
@@ -68,12 +70,12 @@ export class OrdersController {
   updateOrderStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body('status', OrderStatusValidationPipe) status: OrderStatus,
-    @GetUser() user: User,
   ): Promise<Order> {
-    return this.ordersService.updateOrderStatus(id, status, user);
+    return this.ordersService.updateOrderStatus(id, status);
   }
 
   @Delete('/:id')
+  @UseGuards(AuthGuard())
   deleteOrder(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,

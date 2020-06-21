@@ -49,7 +49,7 @@ export class OrderRepository extends Repository<Order> {
       return await query.getMany();
     } catch (error) {
       this.logger.error(
-        `Failed to get task for user "${user.username}", DTO: ${JSON.stringify(
+        `Failed to get order for user "${user.username}", DTO: ${JSON.stringify(
           filterDto,
         )}`,
         error.stack,
